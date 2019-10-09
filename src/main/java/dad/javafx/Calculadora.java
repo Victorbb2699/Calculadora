@@ -1,19 +1,33 @@
 package dad.javafx;
 
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
-import javafx.event.ActionEvent;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.converter.NumberStringConverter;
 
 public class Calculadora extends Application {
+
+	private Complejo operando1R = new Complejo();
+	private Complejo operando2R = new Complejo();
+	private Complejo operando1I = new Complejo();
+	private Complejo operando2I = new Complejo();
+
+	private DoubleProperty resultadoR = new SimpleDoubleProperty();
+	private DoubleProperty resultadoI = new SimpleDoubleProperty();
+	private StringProperty operador = new SimpleStringProperty();
 
 	private TextField text1;
 	private TextField text2;
@@ -46,15 +60,16 @@ public class Calculadora extends Application {
 		text5 = new TextField();
 		text5.setPromptText("0");
 		text5.setMaxWidth(50);
-		
+
 		text6 = new TextField();
 		text6.setPromptText("0");
 		text6.setMaxWidth(50);
 
+
 		resultB = new Button();
 		resultB.setDefaultButton(true);
 		resultB.setText("=");
-		resultB.setOnAction(e -> onresultBnAcction(e));
+		// resultB.setOnAction(e -> onresultBnAcction(e));
 
 		comboOperando = new ComboBox<String>();
 		comboOperando.getItems().addAll("+", "-", "*", "/");
@@ -63,15 +78,15 @@ public class Calculadora extends Application {
 		VBox primerBox = new VBox(5, comboOperando);
 		primerBox.setAlignment(Pos.CENTER);
 
-		HBox opc = new HBox(5, text1, text2);
+		HBox opc = new HBox(5, text1, new Label("+"), text2, new Label("i"));
 		opc.setAlignment(Pos.CENTER);
 
-		HBox opc2 = new HBox(5, text3, text4);
+		HBox opc2 = new HBox(5, text3, new Label("+"), text4, new Label("i"));
 		opc.setAlignment(Pos.CENTER);
 
 		Separator separador = new Separator();
 
-		HBox opc3 = new HBox(5, text5, text6);
+		HBox opc3 = new HBox(5, text5, new Label("+"), text6, new Label("i"));
 		opc.setAlignment(Pos.CENTER);
 
 		VBox operaciones = new VBox(5, opc, opc2, separador, opc3);
@@ -89,21 +104,43 @@ public class Calculadora extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
+		// bindeos
+		Bindings.bindBidirectional(text1.textProperty(), operando1R.getReal(), new NumberStringConverter());
+		Bindings.bindBidirectional(text3.textProperty(), operando2R.getReal(), new NumberStringConverter());
+		Bindings.bindBidirectional(text5.textProperty(), resultadoR, new NumberStringConverter());
+		Bindings.bindBidirectional(text2.textProperty(), operando1I.getImaginario(), new NumberStringConverter());
+		Bindings.bindBidirectional(text4.textProperty(), operando2I.getImaginario(), new NumberStringConverter());
+		Bindings.bindBidirectional(text6.textProperty(), resultadoI, new NumberStringConverter());
+		
+		operador.bind(comboOperando.getSelectionModel().selectedItemProperty());
+		
+		//Bindings.bindBidirectional(text, property2);
+		
+		
+		// listeners
+
+		operador.addListener((o, ov, nv) -> onOperadorChanged(nv));
+
+		comboOperando.getSelectionModel().selectFirst();
 	}
 
-	private void onresultBnAcction(ActionEvent e) {
-		Complejo num1 = new Complejo();
-		Complejo num2 = new Complejo();
-		Complejo num3 = new Complejo();
-		Complejo num4 = new Complejo();
-
-		num1.setReal(Double.parseDouble(text1.getText()));
-		num2.setImaginario((DoubleProperty) text2.getProperties());
-		num3.setReal(Double.parseDouble(text3.getText()));
-		num4.setImaginario((DoubleProperty) text4.getProperties());
-		
-		
-		
+	private void onOperadorChanged(String nv) {
+		switch (nv) {
+		case "+":
+			resultadoR.bind(operando1R.getReal().add(operando2R.getReal()));
+			resultadoI.bind(operando1I.getImaginario().add(operando2I.getImaginario()));
+			break;
+		case "-":
+			resultadoR.bind(operando1R.getReal().subtract(operando2R.getReal()));
+			resultadoI.bind(operando1I.getImaginario().subtract(operando2I.getImaginario()));
+			break;
+//		case "*":
+//			resultado.bind(operando1.multiply(operando2));
+//			break;
+//		case "/":
+//			resultado.bind(operando1.divide(operando2));
+//			break;
+		}
 	}
 
 	public static void main(String[] args) {
@@ -111,3 +148,4 @@ public class Calculadora extends Application {
 	}
 
 }
+//

@@ -65,7 +65,6 @@ public class Calculadora extends Application {
 		text6.setPromptText("0");
 		text6.setMaxWidth(50);
 
-
 		resultB = new Button();
 		resultB.setDefaultButton(true);
 		resultB.setText("=");
@@ -111,12 +110,11 @@ public class Calculadora extends Application {
 		Bindings.bindBidirectional(text2.textProperty(), operando1I.getImaginario(), new NumberStringConverter());
 		Bindings.bindBidirectional(text4.textProperty(), operando2I.getImaginario(), new NumberStringConverter());
 		Bindings.bindBidirectional(text6.textProperty(), resultadoI, new NumberStringConverter());
-		
+
 		operador.bind(comboOperando.getSelectionModel().selectedItemProperty());
-		
-		//Bindings.bindBidirectional(text, property2);
-		
-		
+
+		// Bindings.bindBidirectional(text, property2);
+
 		// listeners
 
 		operador.addListener((o, ov, nv) -> onOperadorChanged(nv));
@@ -134,12 +132,13 @@ public class Calculadora extends Application {
 			resultadoR.bind(operando1R.getReal().subtract(operando2R.getReal()));
 			resultadoI.bind(operando1I.getImaginario().subtract(operando2I.getImaginario()));
 			break;
-//		case "*":
-//			resultado.bind(operando1.multiply(operando2));
-//			break;
-//		case "/":
-//			resultado.bind(operando1.divide(operando2));
-//			break;
+		case "*":
+			resultadoR.bind((operando1R.getReal().multiply(operando2R.getReal()).subtract(operando1I.getImaginario().multiply(operando2I.getImaginario()))));
+			resultadoI.bind(operando1R.getReal().multiply(operando2I.getImaginario()).subtract(operando2R.getReal().multiply(operando1I.getImaginario())));
+			break;
+		case "/":
+			resultado.bind(operando1.divide(operando2));
+			break;
 		}
 	}
 

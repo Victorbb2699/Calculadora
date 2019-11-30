@@ -133,11 +133,21 @@ public class Calculadora extends Application {
 			resultadoI.bind(operando1I.getImaginario().subtract(operando2I.getImaginario()));
 			break;
 		case "*":
-			resultadoR.bind((operando1R.getReal().multiply(operando2R.getReal()).subtract(operando1I.getImaginario().multiply(operando2I.getImaginario()))));
-			resultadoI.bind(operando1R.getReal().multiply(operando2I.getImaginario()).subtract(operando2R.getReal().multiply(operando1I.getImaginario())));
+			resultadoR.bind((operando1R.getReal().multiply(operando2R.getReal())
+					.subtract(operando1I.getImaginario().multiply(operando2I.getImaginario()))));
+			resultadoI.bind(operando1R.getReal().multiply(operando2I.getImaginario())
+					.subtract(operando2R.getReal().multiply(operando1I.getImaginario())));
 			break;
 		case "/":
-			resultado.bind(operando1.divide(operando2));
+			resultadoR.bind(operando1R.getReal().multiply(operando1I.getImaginario())
+					.subtract(operando2R.getReal().multiply(operando2I.getImaginario())
+							.divide(operando1I.getImaginario().multiply(operando1I.getImaginario()
+									.add(operando2I.getImaginario().multiply(operando2I.getImaginario()))))));
+			resultadoI.bind(operando2R.getReal()
+					.multiply(operando1I.getImaginario()
+							.add(operando1R.getReal().multiply(operando2I.getImaginario())
+									.divide(operando1I.getImaginario().multiply(operando1I.getImaginario()
+											.add(operando2I.getImaginario().multiply(operando2I.getImaginario())))))));
 			break;
 		}
 	}
